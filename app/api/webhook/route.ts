@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   const client = await clientPromise;
   const db = client.db(process.env.MONGODB_DB);
 
-  const sessionInfo = await db.collection("conversations").findOne({});
+  const sessionInfo = await db.collection("conversations").findOne({sessionId: session_id});
 
   let conversations = sessionInfo ? [sessionInfo.conversation] : [];
 
