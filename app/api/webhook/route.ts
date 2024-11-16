@@ -45,3 +45,10 @@ export async function POST(request: Request) {
     status: "ok",
   });
 }
+
+export async function GET(request: Request) {
+  return Response.json({
+    status: "ok",
+    webhook: "true"
+  });
+}
