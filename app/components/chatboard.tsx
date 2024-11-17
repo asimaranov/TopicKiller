@@ -5,6 +5,7 @@ import Editor from "@monaco-editor/react";
 
 export default function ChatBoard() {
   const [aiResponse, setAiResponse] = useState("");
+  const [result, setResult] = useState("");
 
   const fetchSession = async () => {
     const response = await fetch("/api/session");
@@ -69,6 +70,8 @@ export default function ChatBoard() {
     }
   }, [data]);
 
+  console.log('Result-2', result);
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-1 row-end-3 items-center w-[90%]">
@@ -97,17 +100,25 @@ export default function ChatBoard() {
               ),
           }}
         ></div>
-        <div className="w-full">
-          {aiResponse && (
+        {aiResponse && (
+          <div className="w-full flex flex-row">
             <Editor
               height="50vh"
-              width="100%"
+              width="50%"
               defaultLanguage="javascript"
               defaultValue={aiResponse}
               theme="vs-dark"
             ></Editor>
-          )}
-        </div>
+            <Editor
+              height="50vh"
+              width="50%"
+              defaultLanguage="javascript"
+              defaultValue={result}
+              value={result}
+              theme="vs-dark"
+            ></Editor>
+          </div>
+        )}
       </main>
 
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
@@ -117,10 +128,12 @@ export default function ChatBoard() {
             onClick={() => {
               const logs = [];
               (console as any).oldLog = console.log;
-              console.log = function (value) {
-                (console as any).oldLog(value);
-                logs.push(value);
-                return value;
+              var logBackup = console.log;
+              var logMessages = [];
+
+              console.log = function () {
+                logMessages.push.apply(logMessages, arguments);
+                logBackup.apply(console, arguments);
               };
 
               eval(aiResponse);
@@ -128,6 +141,11 @@ export default function ChatBoard() {
               console.log = (console as any).oldLog;
 
               console.log("Executions logs", logs);
+              console.log("Executions logs joined", logMessages.join("\n"));
+
+              setResult(logMessages.join("\n"));
+              console.log("Setting result", logMessages.join("\n"));
+
             }}
           >
             <Image
