@@ -14,30 +14,6 @@ export interface ApiResponse {
   };
 }
 
-export async function fetchTopics(): Promise<ApiResponse> {
-  const data = await fetch("https://app.topichunter.io/api/getRows", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      method: "getRows",
-      args: [
-        "Topic",
-        { project_id: "9d6ec66c-50b0-4f9c-a8d2-0cae864afe61" },
-        null,
-        [["traffic_now", "DESC"]],
-        50,
-        0,
-        true,
-      ],
-    }),
-  });
-
-  return await data.json();
-}
-
 async function fetchTHApi(args: any) {
   const data = await fetch("/api/topics", {
     method: "POST",
@@ -51,8 +27,22 @@ async function fetchTHApi(args: any) {
   return await data.json();
 }
 
+export async function fetchTopics(): Promise<ApiResponse> {
+  const data = await fetchTHApi([
+    "Topic",
+    { project_id: "9d6ec66c-50b0-4f9c-a8d2-0cae864afe61" },
+    null,
+    [["traffic_now", "DESC"]],
+    50,
+    0,
+    true,
+  ]);
+
+  return await data.json();
+}
+
 export async function fetchTopicData(topicId: string): Promise<{
-  matchedKeywordsResponse
+  matchedKeywordsResponse;
   missedKeywordsResponse;
   urlsResponse;
 }> {
@@ -165,4 +155,3 @@ export async function fetchTopicData(topicId: string): Promise<{
 
   return { matchedKeywordsResponse, missedKeywordsResponse, urlsResponse };
 }
-
