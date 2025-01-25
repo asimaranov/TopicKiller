@@ -28,7 +28,7 @@ async function fetchTHApi(args: any) {
 }
 
 export async function fetchTopics(): Promise<ApiResponse> {
-  const data = await fetchTHApi([
+  return await fetchTHApi([
     "Topic",
     { project_id: "9d6ec66c-50b0-4f9c-a8d2-0cae864afe61" },
     null,
@@ -37,8 +37,6 @@ export async function fetchTopics(): Promise<ApiResponse> {
     0,
     true,
   ]);
-
-  return await data.json();
 }
 
 export async function fetchTopicData(topicId: string): Promise<{
