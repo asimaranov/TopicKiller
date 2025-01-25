@@ -14,9 +14,6 @@ export interface ApiResponse {
   };
 }
 
-// Simulating an API call with a delay
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export async function fetchTopics(): Promise<ApiResponse> {
   const data = await fetch("https://app.topichunter.io/api/getRows", {
     method: "POST",
@@ -42,16 +39,13 @@ export async function fetchTopics(): Promise<ApiResponse> {
 }
 
 async function fetchTHApi(args: any) {
-  const data = await fetch("https://app.topichunter.io/api/getRows", {
+  const data = await fetch("/api/topics", {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      method: "getRows",
-      args: args,
-    }),
+    body: JSON.stringify(args),
   });
 
   return await data.json();
@@ -171,3 +165,4 @@ export async function fetchTopicData(topicId: string): Promise<{
 
   return { matchedKeywordsResponse, missedKeywordsResponse, urlsResponse };
 }
+
